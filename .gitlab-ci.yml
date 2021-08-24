@@ -1,0 +1,34 @@
+image: "python:3.6"
+
+before_script:
+  - python --version
+  - pip install -r requirements/dev.txt
+
+stages:
+  - static
+  - test
+  - deploy
+
+linter:
+  stage: static
+  script:
+    - make lint
+
+pytest:
+  stage: test
+  script:
+    - make test
+
+deploy_staging:
+  stage: deploy
+  script:
+    - echo "ready"
+  only:
+    - master
+
+deploy_production:
+  stage: deploy
+  script:
+    - echo "ready"
+  only:
+    - tags
