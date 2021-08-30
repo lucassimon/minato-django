@@ -2,5 +2,6 @@ Django==3.2.6
 djangorestframework==3.12.4
 python-dateutil==2.8.2
 pytz==2021.1
-django-environ
+django-environ==0.4.5
 psycopg2==2.9.1
+djangorestframework-simplejwt==4.8.0

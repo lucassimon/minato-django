@@ -14,6 +14,7 @@ from pathlib import Path
 from email.utils import getaddresses
 from django.utils.translation import gettext_lazy as _
 import environ
+from datetime import timedelta
 
 env = environ.Env()
 
@@ -55,9 +56,7 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 
-THIRD_PARTY_APPS = [
-    "rest_framework",
-]
+THIRD_PARTY_APPS = ["rest_framework", "rest_framework_simplejwt"]
 
 LOCAL_APPS = [
     "apps.core",
@@ -186,8 +185,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 100,
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework_simplejwt.authentication.JWTTokenUserAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
