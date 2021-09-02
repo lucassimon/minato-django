@@ -13,7 +13,7 @@ RUN rm -rf /var/cache/apk/* && \
     apk add gettext-dev && \
     apk add musl-dev && \
     apk add openssl-dev && \
-    apk del build-base && \
+    apk add build-base && \
     rm -rf /var/cache/apk/*
 
 ## virtualenv
@@ -30,11 +30,16 @@ RUN pip install -r dev.txt
 FROM python:3.9-alpine AS runtime-image
 
 ## install dependencies
-RUN apk add --no-cache libpq
+RUN apk update && \
+    apk add libpq && \
+    apk add curl && \
+    rm -rf /var/cache/apk/*
 
 ## copy Python dependencies from build image
 COPY --from=compile-image /opt/venv /opt/venv
 
+# PYTHONDONTWRITEBYTECODE: Prevents Python from writing pyc files to disc
+# PYTHONUNBUFFERED: Prevents Python from buffering stdout and stderr
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 HOME=/home/api PATH="/opt/venv/bin:$PATH"
 
 ## add user
@@ -42,9 +47,10 @@ RUN adduser -D api
 USER api:api
 WORKDIR $HOME
 COPY --chown=api:api . $HOME
-COPY --chown=api:api ./.docker/entrypoint.sh /entrypoint.sh
-COPY --chown=api:api ./.docker/start.sh /start.sh
+COPY --chown=api:api ./.docker/dev/entrypoint.sh /entrypoint.sh
+COPY --chown=api:api ./.docker/dev/start.sh /start.sh
 
 EXPOSE 5000
+
 ENTRYPOINT [ "/entrypoint.sh" ]
 

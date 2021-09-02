@@ -14,4 +14,3 @@ Dockerfile-prd
 Dockerfile-prd-multistage
 .sqlite3
 .vscode/
-.docker/

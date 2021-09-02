@@ -4,6 +4,11 @@ volumes:
   postgres_data:
   static_volume:
 
+networks:
+  minato-django-net:
+    name: minato-django-net
+    external: true
+
 services:
   db:
     image: postgres:latest
@@ -12,13 +17,17 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - minato-django-net
+
   web:
     build:
       context: ./
-      dockerfile: ./.docker/Dockerfile
-    command: /start.sh
+      dockerfile: ./.docker/dev/Dockerfile
+    expose:
+      - 5000
     ports:
-      - "5000:5000"
+      - 5000:5000
     stdin_open: true
     tty: true
     depends_on:
@@ -26,6 +35,9 @@ services:
     volumes:
       - .:/home/api
       - static_volume:/home/api/static
+    networks:
+      - default
+      - minato-django-net
     environment:
       DJANGO_SETTINGS_MODULE: main.settings.dev
       DJANGO_READ_DOT_ENV_FILE: "off"
